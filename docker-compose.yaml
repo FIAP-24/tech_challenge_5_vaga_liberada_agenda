@@ -1,0 +1,34 @@
+services:
+  # Serviço MySQL
+  mysql:
+    image: 'mysql:8.0' # Versão fixa para evitar surpresas
+    container_name: mysql-agenda
+    environment:
+      - MYSQL_DATABASE=vaga_liberada_db
+      - MYSQL_ROOT_PASSWORD=root
+      # Scripts em /docker-entrypoint-initdb.d/ rodam na criação do banco
+    volumes:
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - '3306:3306'
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Serviço LocalStack (AWS Mock)
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack-agenda
+    ports:
+      - "4566:4566"            # Gateway Edge Port
+      - "4510-4559:4510-4559"  # Faixa de portas para serviços externos
+    environment:
+      - SERVICES=sqs,sns       # Habilita apenas o que precisamos
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      # Mapeia o script para rodar quando o LocalStack estiver "Ready"
+      - ./docker/localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
+      - "/var/run/docker.sock:/var/run/docker.sock"
