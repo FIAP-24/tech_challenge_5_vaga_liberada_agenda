@@ -55,6 +55,7 @@ CREATE TABLE consultas (
     medico_id INT,
     unidade_id INT,
     data_hora TIMESTAMP NOT NULL,
+    lembrete_enviado BOOLEAN DEFAULT FALSE,
     status VARCHAR(20) DEFAULT 'AGENDADA',
     observacoes TEXT,
     FOREIGN KEY (paciente_id) REFERENCES pacientes(id),
