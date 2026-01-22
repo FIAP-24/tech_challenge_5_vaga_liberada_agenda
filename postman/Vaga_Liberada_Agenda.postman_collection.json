@@ -1,0 +1,315 @@
+{
+	"info": {
+		"_postman_id": "vaga-liberada-agenda",
+		"name": "Vaga Liberada - Agenda API",
+		"description": "Collection com todas as operações CRUD para Paciente e endpoints de teste",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Pacientes",
+			"item": [
+				{
+					"name": "Criar Paciente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"João Silva\",\n    \"cpf\": \"12345678901\",\n    \"cartaoSus\": \"123456789012345\",\n    \"email\": \"joao.silva@email.com\",\n    \"telefone\": \"11987654321\",\n    \"logradouro\": \"Rua das Flores\",\n    \"numero\": \"100\",\n    \"bairro\": \"Centro\",\n    \"cidade\": \"São Paulo\",\n    \"cep\": \"01310100\",\n    \"latitude\": -23.563210,\n    \"longitude\": -46.654439\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pacientes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pacientes"
+							]
+						},
+						"description": "Cria um novo paciente no sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Pacientes (Paginado)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pacientes?page=0&size=10&sort=nome",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pacientes"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Número da página (começa em 0)"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Quantidade de itens por página"
+								},
+								{
+									"key": "sort",
+									"value": "nome",
+									"description": "Campo para ordenação"
+								}
+							]
+						},
+						"description": "Lista pacientes com paginação (padrão: 10 por página, ordenado por nome)"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Todos os Pacientes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pacientes/todos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pacientes",
+								"todos"
+							]
+						},
+						"description": "Lista todos os pacientes sem paginação"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Paciente por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pacientes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pacientes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "ID do paciente"
+								}
+							]
+						},
+						"description": "Busca um paciente específico pelo ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Paciente por CPF",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pacientes/cpf/:cpf",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pacientes",
+								"cpf",
+								":cpf"
+							],
+							"variable": [
+								{
+									"key": "cpf",
+									"value": "12345678901",
+									"description": "CPF do paciente (11 dígitos)"
+								}
+							]
+						},
+						"description": "Busca um paciente específico pelo CPF"
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar Paciente",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"João Silva Atualizado\",\n    \"cpf\": \"12345678901\",\n    \"cartaoSus\": \"123456789012345\",\n    \"email\": \"joao.silva.atualizado@email.com\",\n    \"telefone\": \"11987654321\",\n    \"logradouro\": \"Rua das Flores Atualizada\",\n    \"numero\": \"200\",\n    \"bairro\": \"Centro\",\n    \"cidade\": \"São Paulo\",\n    \"cep\": \"01310100\",\n    \"latitude\": -23.563210,\n    \"longitude\": -46.654439\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pacientes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pacientes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "ID do paciente a ser atualizado"
+								}
+							]
+						},
+						"description": "Atualiza os dados de um paciente existente"
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar Paciente",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pacientes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pacientes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "ID do paciente a ser deletado"
+								}
+							]
+						},
+						"description": "Deleta um paciente do sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Paciente - Validação de Erro",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"\",\n    \"cpf\": \"123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pacientes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pacientes"
+							]
+						},
+						"description": "Teste de validação - deve retornar erros de validação"
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Paciente - CPF Duplicado",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Teste Duplicado\",\n    \"cpf\": \"12345678901\",\n    \"email\": \"teste@email.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pacientes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pacientes"
+							]
+						},
+						"description": "Teste de validação - deve retornar erro de CPF duplicado"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gerenciamento de pacientes"
+		},
+		{
+			"name": "Testes",
+			"item": [
+				{
+					"name": "Enviar Notificação SQS",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\"Teste de mensagem para SQS\""
+						},
+						"url": {
+							"raw": "{{base_url}}/teste/sqs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teste",
+								"sqs"
+							]
+						},
+						"description": "Endpoint de teste para enviar mensagem para fila SQS"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints de teste"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
