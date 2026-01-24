@@ -39,4 +39,7 @@ public class Consulta {
 
     @Column(columnDefinition = "TEXT")
     private String observacoes;
+
+    @Column(name = "lembrete_enviado")
+    private Boolean lembreteEnviado = false;
 }
