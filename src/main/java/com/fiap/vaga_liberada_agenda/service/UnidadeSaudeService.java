@@ -4,6 +4,8 @@ import com.fiap.vaga_liberada_agenda.dto.request.UnidadeSaudeRequest;
 import com.fiap.vaga_liberada_agenda.dto.response.UnidadeSaudeResponse;
 import com.fiap.vaga_liberada_agenda.entity.UnidadeSaude;
 import com.fiap.vaga_liberada_agenda.mapper.UnidadeSaudeMapper;
+import com.fiap.vaga_liberada_agenda.repository.ConsultaRepository;
+import com.fiap.vaga_liberada_agenda.repository.MedicoRepository;
 import com.fiap.vaga_liberada_agenda.repository.UnidadeSaudeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,8 @@ public class UnidadeSaudeService {
 
     private final UnidadeSaudeRepository unidadeSaudeRepository;
     private final UnidadeSaudeMapper unidadeSaudeMapper;
+    private final MedicoRepository medicoRepository;
+    private final ConsultaRepository consultaRepository;
 
     @Transactional
     public UnidadeSaudeResponse criar(UnidadeSaudeRequest request) {
@@ -102,9 +106,20 @@ public class UnidadeSaudeService {
     @Transactional
     public void deletar(Integer id) {
         log.info("Deletando unidade de saúde ID: {}", id);
-        if (!unidadeSaudeRepository.existsById(id)) {
-            throw new IllegalArgumentException("Unidade de Saúde não encontrada com ID: " + id);
+        
+        UnidadeSaude unidadeSaude = unidadeSaudeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Unidade de Saúde não encontrada com ID: " + id));
+        
+        // Verifica se há médicos associados
+        if (medicoRepository.existsByUnidadeId(id)) {
+            throw new IllegalArgumentException("Não é possível deletar unidade de saúde com médicos associados. ID: " + id);
         }
+        
+        // Verifica se há consultas associadas
+        if (consultaRepository.existsByUnidadeId(id)) {
+            throw new IllegalArgumentException("Não é possível deletar unidade de saúde com consultas associadas. ID: " + id);
+        }
+        
         unidadeSaudeRepository.deleteById(id);
         log.info("Unidade de Saúde deletada com sucesso. ID: {}", id);
     }

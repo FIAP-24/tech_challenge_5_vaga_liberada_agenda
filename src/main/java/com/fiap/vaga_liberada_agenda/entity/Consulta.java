@@ -35,11 +35,24 @@ public class Consulta {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private StatusConsulta status = StatusConsulta.AGENDADA;
+    private StatusConsulta status = StatusConsulta.PENDENTE_CONFIRMACAO;
 
     @Column(columnDefinition = "TEXT")
     private String observacoes;
 
     @Column(name = "lembrete_enviado")
     private Boolean lembreteEnviado = false;
+
+    @Column(name = "confirmada_em")
+    private LocalDateTime confirmadaEm;
+
+    @Column(name = "data_limite_confirmacao")
+    private LocalDateTime dataLimiteConfirmacao;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vaga_oferecida_para_lista_espera_id")
+    private ListaEspera vagaOferecidaParaListaEspera;
+
+    @Column(name = "vaga_oferecida_em")
+    private LocalDateTime vagaOferecidaEm;
 }

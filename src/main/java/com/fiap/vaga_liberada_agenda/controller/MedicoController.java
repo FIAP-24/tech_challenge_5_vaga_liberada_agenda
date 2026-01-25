@@ -41,32 +41,11 @@ public class MedicoController {
 
     @GetMapping
     public ResponseEntity<Page<MedicoResponse>> listar(
-            @PageableDefault(size = 10, sort = "nome") Pageable pageable) {
-        Page<MedicoResponse> response = medicoService.listar(pageable);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/todos")
-    public ResponseEntity<List<MedicoResponse>> listarTodos() {
-        List<MedicoResponse> response = medicoService.listarTodos();
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/especialidade/{especialidadeId}")
-    public ResponseEntity<List<MedicoResponse>> listarPorEspecialidade(@PathVariable Integer especialidadeId) {
-        List<MedicoResponse> response = medicoService.listarPorEspecialidade(especialidadeId);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/unidade/{unidadeId}")
-    public ResponseEntity<List<MedicoResponse>> listarPorUnidade(@PathVariable Integer unidadeId) {
-        List<MedicoResponse> response = medicoService.listarPorUnidade(unidadeId);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/ativos")
-    public ResponseEntity<List<MedicoResponse>> listarAtivos() {
-        List<MedicoResponse> response = medicoService.listarAtivos();
+            @PageableDefault(size = 10, sort = "nome") Pageable pageable,
+            @RequestParam(required = false) Integer especialidadeId,
+            @RequestParam(required = false) Integer unidadeId,
+            @RequestParam(required = false) Boolean ativo) {
+        Page<MedicoResponse> response = medicoService.listarComFiltros(pageable, especialidadeId, unidadeId, ativo);
         return ResponseEntity.ok(response);
     }
 

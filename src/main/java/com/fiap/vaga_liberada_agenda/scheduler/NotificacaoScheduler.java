@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -31,11 +32,22 @@ public class NotificacaoScheduler {
         LocalDateTime inicioJanela = agora.plusHours(24).minusMinutes(30); // 23h30min a partir de agora
         LocalDateTime fimJanela = agora.plusHours(24).plusMinutes(30);     // 24h30min a partir de agora
 
-        List<Consulta> consultasProximas = consultaRepository.buscarConsultasParaNotificar(
+        // Busca consultas AGENDADAS e PENDENTE_CONFIRMACAO
+        List<Consulta> consultasAgendadas = consultaRepository.buscarConsultasParaNotificar(
                 inicioJanela,
                 fimJanela,
                 StatusConsulta.AGENDADA
         );
+        
+        List<Consulta> consultasPendentes = consultaRepository.buscarConsultasParaNotificar(
+                inicioJanela,
+                fimJanela,
+                StatusConsulta.PENDENTE_CONFIRMACAO
+        );
+        
+        List<Consulta> consultasProximas = new ArrayList<>();
+        consultasProximas.addAll(consultasAgendadas);
+        consultasProximas.addAll(consultasPendentes);
 
         if (consultasProximas.isEmpty()) {
             return;
@@ -46,11 +58,16 @@ public class NotificacaoScheduler {
         for (Consulta consulta : consultasProximas) {
             try {
                 // 1. Monta a mensagem JSON (formato simples)
+                String tipoMensagem = consulta.getStatus() == StatusConsulta.PENDENTE_CONFIRMACAO 
+                        ? "confirme sua consulta" 
+                        : "lembrete: sua consulta";
+                        
                 String mensagemJson = String.format(
-                        "{\"pacienteId\": %d, \"consultaId\": %d, \"mensagem\": \"Olá %s, confirme sua consulta para amanhã às %s na %s.\"}",
+                        "{\"pacienteId\": %d, \"consultaId\": %d, \"mensagem\": \"Olá %s, %s para amanhã às %s na %s.\"}",
                         consulta.getPaciente().getId(),
                         consulta.getId(),
                         consulta.getPaciente().getNome(),
+                        tipoMensagem,
                         consulta.getDataHora().toLocalTime(),
                         consulta.getUnidade().getNome()
                 );

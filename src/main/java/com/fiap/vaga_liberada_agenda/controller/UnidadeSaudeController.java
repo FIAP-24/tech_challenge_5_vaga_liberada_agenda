@@ -34,17 +34,16 @@ public class UnidadeSaudeController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<UnidadeSaudeResponse>> listar(
-            @PageableDefault(size = 10, sort = "nome") Pageable pageable) {
-        Page<UnidadeSaudeResponse> response = unidadeSaudeService.listar(pageable);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/todos")
-    public ResponseEntity<List<UnidadeSaudeResponse>> listarTodos(
+    public ResponseEntity<?> listar(
             @RequestParam(required = false) String cidade,
-            @RequestParam(required = false) String bairro) {
-        List<UnidadeSaudeResponse> response = unidadeSaudeService.listarComFiltros(cidade, bairro);
+            @RequestParam(required = false) String bairro,
+            @PageableDefault(size = 10, sort = "nome") Pageable pageable) {
+        // Se houver filtros, retorna lista filtrada; caso contrário, retorna paginada
+        if (cidade != null || bairro != null) {
+            List<UnidadeSaudeResponse> response = unidadeSaudeService.listarComFiltros(cidade, bairro);
+            return ResponseEntity.ok(response);
+        }
+        Page<UnidadeSaudeResponse> response = unidadeSaudeService.listar(pageable);
         return ResponseEntity.ok(response);
     }
 

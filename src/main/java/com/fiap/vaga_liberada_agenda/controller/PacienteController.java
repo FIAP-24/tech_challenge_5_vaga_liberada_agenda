@@ -46,12 +46,6 @@ public class PacienteController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/todos")
-    public ResponseEntity<List<PacienteResponse>> listarTodos() {
-        List<PacienteResponse> response = pacienteService.listarTodos();
-        return ResponseEntity.ok(response);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<PacienteResponse> atualizar(
             @PathVariable Integer id,

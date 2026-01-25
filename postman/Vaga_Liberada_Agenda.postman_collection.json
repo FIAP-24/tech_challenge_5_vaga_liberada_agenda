@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "vaga-liberada-agenda",
 		"name": "Vaga Liberada - Agenda API",
-		"description": "Collection com todas as operações CRUD para Paciente, Médico, Unidade de Saúde e endpoints de teste",
+		"description": "Collection com todas as operações CRUD para Paciente, Médico, Unidade de Saúde, Consulta e Lista de Espera",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -25,13 +25,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/pacientes",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"pacientes"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "pacientes"]
 						},
 						"description": "Cria um novo paciente no sistema"
 					},
@@ -44,52 +39,15 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/pacientes?page=0&size=10&sort=nome",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"pacientes"
-							],
+							"host": ["{{base_url}}"],
+							"path": ["api", "pacientes"],
 							"query": [
-								{
-									"key": "page",
-									"value": "0",
-									"description": "Número da página (começa em 0)"
-								},
-								{
-									"key": "size",
-									"value": "10",
-									"description": "Quantidade de itens por página"
-								},
-								{
-									"key": "sort",
-									"value": "nome",
-									"description": "Campo para ordenação"
-								}
+								{"key": "page", "value": "0", "description": "Número da página (começa em 0)"},
+								{"key": "size", "value": "10", "description": "Quantidade de itens por página"},
+								{"key": "sort", "value": "nome", "description": "Campo para ordenação"}
 							]
 						},
 						"description": "Lista pacientes com paginação (padrão: 10 por página, ordenado por nome)"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Todos os Pacientes",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/pacientes/todos",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"pacientes",
-								"todos"
-							]
-						},
-						"description": "Lista todos os pacientes sem paginação"
 					},
 					"response": []
 				},
@@ -100,21 +58,9 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/pacientes/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"pacientes",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1",
-									"description": "ID do paciente"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "pacientes", ":id"],
+							"variable": [{"key": "id", "value": "1", "description": "ID do paciente"}]
 						},
 						"description": "Busca um paciente específico pelo ID"
 					},
@@ -127,22 +73,9 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/pacientes/cpf/:cpf",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"pacientes",
-								"cpf",
-								":cpf"
-							],
-							"variable": [
-								{
-									"key": "cpf",
-									"value": "12345678901",
-									"description": "CPF do paciente (11 dígitos)"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "pacientes", "cpf", ":cpf"],
+							"variable": [{"key": "cpf", "value": "12345678901", "description": "CPF do paciente (11 dígitos)"}]
 						},
 						"description": "Busca um paciente específico pelo CPF"
 					},
@@ -152,33 +85,16 @@
 					"name": "Atualizar Paciente",
 					"request": {
 						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [{"key": "Content-Type", "value": "application/json"}],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"nome\": \"João Silva Atualizado\",\n    \"cpf\": \"12345678901\",\n    \"cartaoSus\": \"123456789012345\",\n    \"email\": \"joao.silva.atualizado@email.com\",\n    \"telefone\": \"11987654321\",\n    \"logradouro\": \"Rua das Flores Atualizada\",\n    \"numero\": \"200\",\n    \"bairro\": \"Centro\",\n    \"cidade\": \"São Paulo\",\n    \"cep\": \"01310100\",\n    \"latitude\": -23.563210,\n    \"longitude\": -46.654439\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/pacientes/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"pacientes",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1",
-									"description": "ID do paciente a ser atualizado"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "pacientes", ":id"],
+							"variable": [{"key": "id", "value": "1", "description": "ID do paciente a ser atualizado"}]
 						},
 						"description": "Atualiza os dados de um paciente existente"
 					},
@@ -191,79 +107,11 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/pacientes/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"pacientes",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1",
-									"description": "ID do paciente a ser deletado"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "pacientes", ":id"],
+							"variable": [{"key": "id", "value": "1", "description": "ID do paciente a ser deletado"}]
 						},
-						"description": "Deleta um paciente do sistema"
-					},
-					"response": []
-				},
-				{
-					"name": "Criar Paciente - Validação de Erro",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nome\": \"\",\n    \"cpf\": \"123\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/pacientes",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"pacientes"
-							]
-						},
-						"description": "Teste de validação - deve retornar erros de validação"
-					},
-					"response": []
-				},
-				{
-					"name": "Criar Paciente - CPF Duplicado",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nome\": \"Teste Duplicado\",\n    \"cpf\": \"12345678901\",\n    \"email\": \"teste@email.com\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/pacientes",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"pacientes"
-							]
-						},
-						"description": "Teste de validação - deve retornar erro de CPF duplicado"
+						"description": "Deleta um paciente do sistema (valida se há consultas ou lista de espera associadas)"
 					},
 					"response": []
 				}
@@ -277,83 +125,39 @@
 					"name": "Criar Médico",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [{"key": "Content-Type", "value": "application/json"}],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"nome\": \"Dr. João Silva\",\n    \"crm\": \"CRM123456\",\n    \"especialidadeId\": 1,\n    \"unidadeId\": 1,\n    \"ativo\": true\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/medicos",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "medicos"]
 						},
 						"description": "Cria um novo médico no sistema"
 					},
 					"response": []
 				},
 				{
-					"name": "Listar Médicos (Paginado)",
+					"name": "Listar Médicos (com Filtros)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/medicos?page=0&size=10&sort=nome",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos"
-							],
+							"raw": "{{base_url}}/api/medicos?page=0&size=10&sort=nome&especialidadeId=1&unidadeId=1&ativo=true",
+							"host": ["{{base_url}}"],
+							"path": ["api", "medicos"],
 							"query": [
-								{
-									"key": "page",
-									"value": "0",
-									"description": "Número da página (começa em 0)"
-								},
-								{
-									"key": "size",
-									"value": "10",
-									"description": "Quantidade de itens por página"
-								},
-								{
-									"key": "sort",
-									"value": "nome",
-									"description": "Campo para ordenação"
-								}
+								{"key": "page", "value": "0", "description": "Número da página"},
+								{"key": "size", "value": "10", "description": "Quantidade de itens por página"},
+								{"key": "sort", "value": "nome", "description": "Campo para ordenação"},
+								{"key": "especialidadeId", "value": "1", "description": "Filtrar por especialidade (opcional)", "disabled": true},
+								{"key": "unidadeId", "value": "1", "description": "Filtrar por unidade (opcional)", "disabled": true},
+								{"key": "ativo", "value": "true", "description": "Filtrar por status ativo (opcional)", "disabled": true}
 							]
 						},
-						"description": "Lista médicos com paginação (padrão: 10 por página, ordenado por nome)"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Todos os Médicos",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/medicos/todos",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos",
-								"todos"
-							]
-						},
-						"description": "Lista todos os médicos sem paginação"
+						"description": "Lista médicos com paginação e filtros opcionais (especialidadeId, unidadeId, ativo)"
 					},
 					"response": []
 				},
@@ -364,21 +168,9 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/medicos/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1",
-									"description": "ID do médico"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "medicos", ":id"],
+							"variable": [{"key": "id", "value": "1", "description": "ID do médico"}]
 						},
 						"description": "Busca um médico específico pelo ID"
 					},
@@ -391,100 +183,11 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/medicos/crm/:crm",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos",
-								"crm",
-								":crm"
-							],
-							"variable": [
-								{
-									"key": "crm",
-									"value": "CRM123456",
-									"description": "CRM do médico"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "medicos", "crm", ":crm"],
+							"variable": [{"key": "crm", "value": "CRM123456", "description": "CRM do médico"}]
 						},
 						"description": "Busca um médico específico pelo CRM"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Médicos por Especialidade",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/medicos/especialidade/:especialidadeId",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos",
-								"especialidade",
-								":especialidadeId"
-							],
-							"variable": [
-								{
-									"key": "especialidadeId",
-									"value": "1",
-									"description": "ID da especialidade"
-								}
-							]
-						},
-						"description": "Lista todos os médicos de uma especialidade específica"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Médicos por Unidade",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/medicos/unidade/:unidadeId",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos",
-								"unidade",
-								":unidadeId"
-							],
-							"variable": [
-								{
-									"key": "unidadeId",
-									"value": "1",
-									"description": "ID da unidade de saúde"
-								}
-							]
-						},
-						"description": "Lista todos os médicos de uma unidade específica"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Médicos Ativos",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/medicos/ativos",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos",
-								"ativos"
-							]
-						},
-						"description": "Lista apenas os médicos ativos no sistema"
 					},
 					"response": []
 				},
@@ -492,33 +195,16 @@
 					"name": "Atualizar Médico",
 					"request": {
 						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [{"key": "Content-Type", "value": "application/json"}],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"nome\": \"Dr. João Silva Atualizado\",\n    \"crm\": \"CRM123456\",\n    \"especialidadeId\": 2,\n    \"unidadeId\": 2,\n    \"ativo\": true\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/medicos/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1",
-									"description": "ID do médico a ser atualizado"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "medicos", ":id"],
+							"variable": [{"key": "id", "value": "1", "description": "ID do médico a ser atualizado"}]
 						},
 						"description": "Atualiza os dados de um médico existente"
 					},
@@ -531,22 +217,9 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/medicos/:id/desativar",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos",
-								":id",
-								"desativar"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1",
-									"description": "ID do médico a ser desativado"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "medicos", ":id", "desativar"],
+							"variable": [{"key": "id", "value": "1", "description": "ID do médico a ser desativado"}]
 						},
 						"description": "Desativa um médico (soft delete)"
 					},
@@ -559,22 +232,9 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/medicos/:id/ativar",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos",
-								":id",
-								"ativar"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1",
-									"description": "ID do médico a ser ativado"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "medicos", ":id", "ativar"],
+							"variable": [{"key": "id", "value": "1", "description": "ID do médico a ser ativado"}]
 						},
 						"description": "Ativa um médico previamente desativado"
 					},
@@ -587,79 +247,11 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/medicos/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1",
-									"description": "ID do médico a ser deletado"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "medicos", ":id"],
+							"variable": [{"key": "id", "value": "1", "description": "ID do médico a ser deletado"}]
 						},
-						"description": "Deleta um médico do sistema"
-					},
-					"response": []
-				},
-				{
-					"name": "Criar Médico - Validação de Erro",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nome\": \"\",\n    \"crm\": \"\",\n    \"especialidadeId\": null\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/medicos",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos"
-							]
-						},
-						"description": "Teste de validação - deve retornar erros de validação"
-					},
-					"response": []
-				},
-				{
-					"name": "Criar Médico - CRM Duplicado",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nome\": \"Dr. Teste Duplicado\",\n    \"crm\": \"CRM123456\",\n    \"especialidadeId\": 1,\n    \"unidadeId\": 1\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/medicos",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"medicos"
-							]
-						},
-						"description": "Teste de validação - deve retornar erro de CRM duplicado"
+						"description": "Deleta um médico do sistema (valida se há consultas associadas)"
 					},
 					"response": []
 				}
@@ -673,169 +265,38 @@
 					"name": "Criar Unidade de Saúde",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [{"key": "Content-Type", "value": "application/json"}],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"nome\": \"UBS Centro\",\n    \"logradouro\": \"Av. Paulista\",\n    \"numero\": \"1000\",\n    \"bairro\": \"Centro\",\n    \"cidade\": \"São Paulo\",\n    \"cep\": \"01310100\",\n    \"latitude\": -23.563210,\n    \"longitude\": -46.654439\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/unidades-saude",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"unidades-saude"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "unidades-saude"]
 						},
 						"description": "Cria uma nova unidade de saúde no sistema"
 					},
 					"response": []
 				},
 				{
-					"name": "Listar Unidades (Paginado)",
+					"name": "Listar Unidades (com Filtros)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/unidades-saude?page=0&size=10&sort=nome",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"unidades-saude"
-							],
+							"raw": "{{base_url}}/api/unidades-saude?cidade=São Paulo&bairro=Centro&page=0&size=10&sort=nome",
+							"host": ["{{base_url}}"],
+							"path": ["api", "unidades-saude"],
 							"query": [
-								{
-									"key": "page",
-									"value": "0",
-									"description": "Número da página (começa em 0)"
-								},
-								{
-									"key": "size",
-									"value": "10",
-									"description": "Quantidade de itens por página"
-								},
-								{
-									"key": "sort",
-									"value": "nome",
-									"description": "Campo para ordenação"
-								}
+								{"key": "cidade", "value": "São Paulo", "description": "Filtrar por cidade (opcional)", "disabled": true},
+								{"key": "bairro", "value": "Centro", "description": "Filtrar por bairro (opcional)", "disabled": true},
+								{"key": "page", "value": "0", "description": "Número da página"},
+								{"key": "size", "value": "10", "description": "Quantidade de itens por página"},
+								{"key": "sort", "value": "nome", "description": "Campo para ordenação"}
 							]
 						},
-						"description": "Lista unidades de saúde com paginação (padrão: 10 por página, ordenado por nome)"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Todas as Unidades",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/unidades-saude/todos",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"unidades-saude",
-								"todos"
-							]
-						},
-						"description": "Lista todas as unidades de saúde sem paginação"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Unidades - Filtrar por Cidade",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/unidades-saude/todos?cidade=São Paulo",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"unidades-saude",
-								"todos"
-							],
-							"query": [
-								{
-									"key": "cidade",
-									"value": "São Paulo",
-									"description": "Filtrar por cidade"
-								}
-							]
-						},
-						"description": "Lista unidades de saúde filtradas por cidade"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Unidades - Filtrar por Bairro",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/unidades-saude/todos?bairro=Centro",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"unidades-saude",
-								"todos"
-							],
-							"query": [
-								{
-									"key": "bairro",
-									"value": "Centro",
-									"description": "Filtrar por bairro"
-								}
-							]
-						},
-						"description": "Lista unidades de saúde filtradas por bairro"
-					},
-					"response": []
-				},
-				{
-					"name": "Listar Unidades - Filtrar por Cidade e Bairro",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/unidades-saude/todos?cidade=São Paulo&bairro=Centro",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"unidades-saude",
-								"todos"
-							],
-							"query": [
-								{
-									"key": "cidade",
-									"value": "São Paulo",
-									"description": "Filtrar por cidade"
-								},
-								{
-									"key": "bairro",
-									"value": "Centro",
-									"description": "Filtrar por bairro"
-								}
-							]
-						},
-						"description": "Lista unidades de saúde filtradas por cidade e bairro"
+						"description": "Lista unidades de saúde com paginação e filtros opcionais (cidade, bairro). Se houver filtros, retorna lista; caso contrário, retorna paginada."
 					},
 					"response": []
 				},
@@ -846,21 +307,9 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/unidades-saude/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"unidades-saude",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1",
-									"description": "ID da unidade de saúde"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "unidades-saude", ":id"],
+							"variable": [{"key": "id", "value": "1", "description": "ID da unidade de saúde"}]
 						},
 						"description": "Busca uma unidade de saúde específica pelo ID"
 					},
@@ -870,33 +319,16 @@
 					"name": "Atualizar Unidade de Saúde",
 					"request": {
 						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [{"key": "Content-Type", "value": "application/json"}],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"nome\": \"UBS Centro Atualizada\",\n    \"logradouro\": \"Av. Paulista Atualizada\",\n    \"numero\": \"2000\",\n    \"bairro\": \"Centro\",\n    \"cidade\": \"São Paulo\",\n    \"cep\": \"01310100\",\n    \"latitude\": -23.563210,\n    \"longitude\": -46.654439\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/unidades-saude/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"unidades-saude",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1",
-									"description": "ID da unidade a ser atualizada"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "unidades-saude", ":id"],
+							"variable": [{"key": "id", "value": "1", "description": "ID da unidade a ser atualizada"}]
 						},
 						"description": "Atualiza os dados de uma unidade de saúde existente"
 					},
@@ -909,79 +341,11 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/unidades-saude/:id",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"unidades-saude",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1",
-									"description": "ID da unidade a ser deletada"
-								}
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "unidades-saude", ":id"],
+							"variable": [{"key": "id", "value": "1", "description": "ID da unidade a ser deletada"}]
 						},
-						"description": "Deleta uma unidade de saúde do sistema"
-					},
-					"response": []
-				},
-				{
-					"name": "Criar Unidade - Validação de Erro",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nome\": \"\",\n    \"latitude\": null,\n    \"longitude\": null\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/unidades-saude",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"unidades-saude"
-							]
-						},
-						"description": "Teste de validação - deve retornar erros de validação"
-					},
-					"response": []
-				},
-				{
-					"name": "Criar Unidade - Nome Duplicado",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nome\": \"UBS Centro\",\n    \"latitude\": -23.563210,\n    \"longitude\": -46.654439\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/unidades-saude",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"unidades-saude"
-							]
-						},
-						"description": "Teste de validação - deve retornar erro de nome duplicado"
+						"description": "Deleta uma unidade de saúde do sistema (valida se há médicos ou consultas associadas)"
 					},
 					"response": []
 				}
@@ -989,38 +353,201 @@
 			"description": "Endpoints para gerenciamento de unidades de saúde"
 		},
 		{
-			"name": "Testes",
+			"name": "Consultas",
 			"item": [
 				{
-					"name": "Enviar Notificação SQS",
+					"name": "Agendar Consulta",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [{"key": "Content-Type", "value": "application/json"}],
 						"body": {
 							"mode": "raw",
-							"raw": "\"Teste de mensagem para SQS\""
+							"raw": "{\n    \"pacienteId\": 1,\n    \"medicoId\": 1,\n    \"unidadeId\": 1,\n    \"dataHora\": \"2024-12-25T10:00:00\",\n    \"observacoes\": \"Consulta de rotina\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/teste/sqs",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"teste",
-								"sqs"
+							"raw": "{{base_url}}/api/consultas",
+							"host": ["{{base_url}}"],
+							"path": ["api", "consultas"]
+						},
+						"description": "Agenda uma nova consulta (status inicial: PENDENTE_CONFIRMACAO)"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Consultas (com Filtros)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/consultas?pacienteId=1&status=PENDENTE_CONFIRMACAO",
+							"host": ["{{base_url}}"],
+							"path": ["api", "consultas"],
+							"query": [
+								{"key": "pacienteId", "value": "1", "description": "Filtrar por paciente (opcional)", "disabled": true},
+								{"key": "status", "value": "PENDENTE_CONFIRMACAO", "description": "Filtrar por status (opcional): AGENDADA, PENDENTE_CONFIRMACAO, LIBERADA, CANCELADA, DESISTENCIA, REALIZADA", "disabled": true}
 							]
 						},
-						"description": "Endpoint de teste para enviar mensagem para fila SQS"
+						"description": "Lista consultas com filtros opcionais (pacienteId, status). Se não houver filtros, retorna todas."
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Consulta por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/consultas/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "consultas", ":id"],
+							"variable": [{"key": "id", "value": "1", "description": "ID da consulta"}]
+						},
+						"description": "Busca uma consulta específica pelo ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Confirmar Consulta",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/consultas/:id/confirmar",
+							"host": ["{{base_url}}"],
+							"path": ["api", "consultas", ":id", "confirmar"],
+							"variable": [{"key": "id", "value": "1", "description": "ID da consulta a ser confirmada"}]
+						},
+						"description": "Confirma uma consulta pendente (muda status para AGENDADA). Deve ser confirmada até 24h antes."
+					},
+					"response": []
+				},
+				{
+					"name": "Cancelar Consulta",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/consultas/:id/cancelar",
+							"host": ["{{base_url}}"],
+							"path": ["api", "consultas", ":id", "cancelar"],
+							"variable": [{"key": "id", "value": "1", "description": "ID da consulta a ser cancelada"}]
+						},
+						"description": "Cancela uma consulta (muda status para CANCELADA)"
+					},
+					"response": []
+				},
+				{
+					"name": "Aceitar Vaga da Lista de Espera",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/consultas/:id/aceitar-vaga?listaEsperaId=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "consultas", ":id", "aceitar-vaga"],
+							"query": [
+								{"key": "listaEsperaId", "value": "1", "description": "ID do registro na lista de espera"}
+							],
+							"variable": [{"key": "id", "value": "1", "description": "ID da consulta (vaga liberada)"}]
+						},
+						"description": "Aceita uma vaga liberada oferecida para o paciente na lista de espera"
 					},
 					"response": []
 				}
 			],
-			"description": "Endpoints de teste"
+			"description": "Endpoints para gerenciamento de consultas"
+		},
+		{
+			"name": "Lista de Espera",
+			"item": [
+				{
+					"name": "Adicionar na Lista de Espera",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pacienteId\": 1,\n    \"especialidadeId\": 1,\n    \"medicoId\": 1,\n    \"unidadeId\": 1,\n    \"prioridade\": 0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/lista-espera",
+							"host": ["{{base_url}}"],
+							"path": ["api", "lista-espera"]
+						},
+						"description": "Adiciona um paciente na lista de espera. medicoId e unidadeId são opcionais."
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Lista de Espera (com Filtros)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/lista-espera?especialidadeId=1&medicoId=1&unidadeId=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "lista-espera"],
+							"query": [
+								{"key": "especialidadeId", "value": "1", "description": "Filtrar por especialidade (opcional)", "disabled": true},
+								{"key": "medicoId", "value": "1", "description": "Filtrar por médico (opcional)", "disabled": true},
+								{"key": "unidadeId", "value": "1", "description": "Filtrar por unidade (opcional)", "disabled": true}
+							]
+						},
+						"description": "Lista registros da lista de espera com filtros opcionais. Se não houver filtros, retorna todos."
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Lista de Espera por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/lista-espera/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "lista-espera", ":id"],
+							"variable": [{"key": "id", "value": "1", "description": "ID do registro na lista de espera"}]
+						},
+						"description": "Busca um registro específico da lista de espera pelo ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Obter Próximo da Fila",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/lista-espera/proximo?especialidadeId=1&medicoId=1&unidadeId=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "lista-espera", "proximo"],
+							"query": [
+								{"key": "especialidadeId", "value": "1", "description": "Filtrar por especialidade (opcional)", "disabled": true},
+								{"key": "medicoId", "value": "1", "description": "Filtrar por médico (opcional)", "disabled": true},
+								{"key": "unidadeId", "value": "1", "description": "Filtrar por unidade (opcional)", "disabled": true}
+							]
+						},
+						"description": "Obtém o próximo paciente da fila de espera (ordem: prioridade DESC, data cadastro ASC)"
+					},
+					"response": []
+				},
+				{
+					"name": "Remover da Lista de Espera",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/lista-espera/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "lista-espera", ":id"],
+							"variable": [{"key": "id", "value": "1", "description": "ID do registro a ser removido"}]
+						},
+						"description": "Remove um registro da lista de espera (muda status para CANCELADA). Não pode remover se estiver AGUARDANDO_RESPOSTA."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gerenciamento da lista de espera"
 		}
 	],
 	"variable": [

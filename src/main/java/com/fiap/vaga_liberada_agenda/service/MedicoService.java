@@ -6,6 +6,7 @@ import com.fiap.vaga_liberada_agenda.entity.Especialidade;
 import com.fiap.vaga_liberada_agenda.entity.Medico;
 import com.fiap.vaga_liberada_agenda.entity.UnidadeSaude;
 import com.fiap.vaga_liberada_agenda.mapper.MedicoMapper;
+import com.fiap.vaga_liberada_agenda.repository.ConsultaRepository;
 import com.fiap.vaga_liberada_agenda.repository.EspecialidadeRepository;
 import com.fiap.vaga_liberada_agenda.repository.MedicoRepository;
 import com.fiap.vaga_liberada_agenda.repository.UnidadeSaudeRepository;
@@ -28,6 +29,7 @@ public class MedicoService {
     private final EspecialidadeRepository especialidadeRepository;
     private final UnidadeSaudeRepository unidadeSaudeRepository;
     private final MedicoMapper medicoMapper;
+    private final ConsultaRepository consultaRepository;
 
     @Transactional
     public MedicoResponse criar(MedicoRequest request) {
@@ -68,38 +70,31 @@ public class MedicoService {
         return medicoMapper.toResponse(medico);
     }
 
-    public Page<MedicoResponse> listar(Pageable pageable) {
-        log.info("Listando médicos - página: {}, tamanho: {}", pageable.getPageNumber(), pageable.getPageSize());
-        return medicoRepository.findAll(pageable)
-                .map(medicoMapper::toResponse);
-    }
-
-    public List<MedicoResponse> listarTodos() {
-        log.info("Listando todos os médicos");
-        return medicoRepository.findAll().stream()
-                .map(medicoMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    public List<MedicoResponse> listarPorEspecialidade(Integer especialidadeId) {
-        log.info("Listando médicos por especialidade ID: {}", especialidadeId);
-        return medicoRepository.findByEspecialidadeId(especialidadeId).stream()
-                .map(medicoMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    public List<MedicoResponse> listarPorUnidade(Integer unidadeId) {
-        log.info("Listando médicos por unidade ID: {}", unidadeId);
-        return medicoRepository.findByUnidadeId(unidadeId).stream()
-                .map(medicoMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    public List<MedicoResponse> listarAtivos() {
-        log.info("Listando médicos ativos");
-        return medicoRepository.findByAtivo(true).stream()
-                .map(medicoMapper::toResponse)
-                .collect(Collectors.toList());
+    public Page<MedicoResponse> listarComFiltros(Pageable pageable, Integer especialidadeId, Integer unidadeId, Boolean ativo) {
+        log.info("Listando médicos com filtros - especialidade: {}, unidade: {}, ativo: {}, página: {}, tamanho: {}", 
+                especialidadeId, unidadeId, ativo, pageable.getPageNumber(), pageable.getPageSize());
+        
+        Page<Medico> medicos;
+        
+        if (especialidadeId != null && unidadeId != null && ativo != null) {
+            medicos = medicoRepository.findByEspecialidadeIdAndUnidadeIdAndAtivo(especialidadeId, unidadeId, ativo, pageable);
+        } else if (especialidadeId != null && unidadeId != null) {
+            medicos = medicoRepository.findByEspecialidadeIdAndUnidadeId(especialidadeId, unidadeId, pageable);
+        } else if (especialidadeId != null && ativo != null) {
+            medicos = medicoRepository.findByEspecialidadeIdAndAtivo(especialidadeId, ativo, pageable);
+        } else if (unidadeId != null && ativo != null) {
+            medicos = medicoRepository.findByUnidadeIdAndAtivo(unidadeId, ativo, pageable);
+        } else if (especialidadeId != null) {
+            medicos = medicoRepository.findByEspecialidadeId(especialidadeId, pageable);
+        } else if (unidadeId != null) {
+            medicos = medicoRepository.findByUnidadeId(unidadeId, pageable);
+        } else if (ativo != null) {
+            medicos = medicoRepository.findByAtivo(ativo, pageable);
+        } else {
+            medicos = medicoRepository.findAll(pageable);
+        }
+        
+        return medicos.map(medicoMapper::toResponse);
     }
 
     @Transactional
@@ -157,9 +152,15 @@ public class MedicoService {
     @Transactional
     public void deletar(Integer id) {
         log.info("Deletando médico ID: {}", id);
-        if (!medicoRepository.existsById(id)) {
-            throw new IllegalArgumentException("Médico não encontrado com ID: " + id);
+        
+        Medico medico = medicoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Médico não encontrado com ID: " + id));
+        
+        // Verifica se há consultas associadas
+        if (consultaRepository.existsByMedicoId(id)) {
+            throw new IllegalArgumentException("Não é possível deletar médico com consultas associadas. ID: " + id);
         }
+        
         medicoRepository.deleteById(id);
         log.info("Médico deletado com sucesso. ID: {}", id);
     }
