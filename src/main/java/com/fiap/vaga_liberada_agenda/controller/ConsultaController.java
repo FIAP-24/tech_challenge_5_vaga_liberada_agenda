@@ -69,6 +69,12 @@ public class ConsultaController {
         return ResponseEntity.ok(response);
     }
 
+    @PatchMapping("/{id}/desistir")
+    public ResponseEntity<ConsultaResponse> desistirConsulta(@PathVariable Integer id) {
+        ConsultaResponse response = consultaService.desistirConsulta(id);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/{id}/aceitar-vaga")
     public ResponseEntity<Void> aceitarVaga(
             @PathVariable Integer id,
