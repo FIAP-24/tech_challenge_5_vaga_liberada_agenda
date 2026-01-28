@@ -24,6 +24,7 @@ public class ConsultaService {
     private final MedicoRepository medicoRepository;
     private final UnidadeSaudeRepository unidadeSaudeRepository;
     private final ConsultaMapper consultaMapper;
+    private final LiberacaoVagaService liberacaoVagaService;
 
     @Transactional
     public ConsultaResponse agendar(ConsultaRequest request) {
@@ -111,6 +112,29 @@ public class ConsultaService {
 
         Consulta atualizada = consultaRepository.save(consulta);
         log.info("Consulta cancelada com sucesso. ID: {}", atualizada.getId());
+
+        return consultaMapper.toResponse(atualizada);
+    }
+
+    @Transactional
+    public ConsultaResponse desistirConsulta(Integer id) {
+        Consulta consulta = consultaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Consulta não encontrada com ID: " + id));
+
+        if (consulta.getStatus() == StatusConsulta.REALIZADA) {
+            throw new IllegalArgumentException("Não é possível cancelar uma consulta já realizada");
+        }
+
+        if (consulta.getStatus() == StatusConsulta.CANCELADA) {
+            throw new IllegalArgumentException("Não é possível cancelar uma consulta cancelada");
+        }
+
+        consulta.setStatus(StatusConsulta.DESISTENCIA);
+
+        Consulta atualizada = consultaRepository.save(consulta);
+        log.info("Consulta cancelada com sucesso. ID: {}", atualizada.getId());
+
+        liberacaoVagaService.liberarVaga(consulta);
 
         return consultaMapper.toResponse(atualizada);
     }
