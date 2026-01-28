@@ -4,6 +4,8 @@ import com.fiap.vaga_liberada_agenda.dto.request.PacienteRequest;
 import com.fiap.vaga_liberada_agenda.dto.response.PacienteResponse;
 import com.fiap.vaga_liberada_agenda.entity.Paciente;
 import com.fiap.vaga_liberada_agenda.mapper.PacienteMapper;
+import com.fiap.vaga_liberada_agenda.repository.ConsultaRepository;
+import com.fiap.vaga_liberada_agenda.repository.ListaEsperaRepository;
 import com.fiap.vaga_liberada_agenda.repository.PacienteRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,8 @@ public class PacienteService {
 
     private final PacienteRepository pacienteRepository;
     private final PacienteMapper pacienteMapper;
+    private final ConsultaRepository consultaRepository;
+    private final ListaEsperaRepository listaEsperaRepository;
 
     @Transactional
     public PacienteResponse criar(PacienteRequest request) {
@@ -102,9 +106,20 @@ public class PacienteService {
     @Transactional
     public void deletar(Integer id) {
         log.info("Deletando paciente ID: {}", id);
-        if (!pacienteRepository.existsById(id)) {
-            throw new IllegalArgumentException("Paciente não encontrado com ID: " + id);
+        
+        Paciente paciente = pacienteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Paciente não encontrado com ID: " + id));
+        
+        // Verifica se há consultas associadas
+        if (consultaRepository.existsByPacienteId(id)) {
+            throw new IllegalArgumentException("Não é possível deletar paciente com consultas associadas. ID: " + id);
         }
+        
+        // Verifica se está na lista de espera ativa
+        if (listaEsperaRepository.existsPacienteAtivoNaLista(id)) {
+            throw new IllegalArgumentException("Não é possível deletar paciente que está na lista de espera ativa. ID: " + id);
+        }
+        
         pacienteRepository.deleteById(id);
         log.info("Paciente deletado com sucesso. ID: {}", id);
     }
