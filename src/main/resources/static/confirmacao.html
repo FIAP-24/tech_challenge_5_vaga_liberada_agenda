@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Consulta - Vaga Liberada</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f2f5; margin: 0; }
+        .card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
+        h1 { color: #2c3e50; }
+        p { color: #7f8c8d; margin-bottom: 2rem; }
+        button { background-color: #27ae60; color: white; border: none; padding: 15px 30px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s; width: 100%; }
+        button:hover { background-color: #2ecc71; }
+        button:disabled { background-color: #95a5a6; cursor: not-allowed; }
+        .status { margin-top: 15px; font-weight: bold; }
+        .success { color: #27ae60; }
+        .error { color: #c0392b; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Confirmar Presença</h1>
+    <p>Sua consulta é muito importante. Confirme sua presença abaixo:</p>
+
+    <p>Consulta ID: <strong id="displayId">...</strong></p>
+
+    <button id="btnConfirmar" onclick="confirmarConsulta()">✅ Confirmar Presença</button>
+
+    <div id="statusMessage" class="status"></div>
+</div>
+
+<script>
+    // 1. Pega o ID da URL (ex: http://localhost:8080/confirmacao.html?id=10)
+    const urlParams = new URLSearchParams(window.location.search);
+    const consultaId = urlParams.get('id');
+
+    // Exibe o ID na tela
+    if (consultaId) {
+        document.getElementById('displayId').innerText = consultaId;
+    } else {
+        document.getElementById('displayId').innerText = "Não identificado";
+        document.getElementById('btnConfirmar').disabled = true;
+    }
+
+    // 2. Função que chama o Backend
+    async function confirmarConsulta() {
+        const btn = document.getElementById('btnConfirmar');
+        const msg = document.getElementById('statusMessage');
+
+        btn.disabled = true;
+        btn.innerText = "Processando...";
+
+        try {
+            // Chama o endpoint POST
+            const response = await fetch(`/api/consultas/${consultaId}/confirmar`, {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                msg.innerText = "Sucesso! Sua consulta foi confirmada.";
+                msg.className = "status success";
+                btn.innerText = "Confirmado 🎉";
+            } else {
+                throw new Error('Falha na requisição');
+            }
+        } catch (error) {
+            msg.innerText = "Erro ao confirmar. Tente novamente.";
+            msg.className = "status error";
+            btn.disabled = false;
+            btn.innerText = "Tentar Novamente";
+        }
+    }
+</script>
+
+</body>
+</html>
