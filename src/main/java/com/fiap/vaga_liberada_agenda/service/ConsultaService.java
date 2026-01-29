@@ -62,9 +62,8 @@ public class ConsultaService {
         consulta.setStatus(StatusConsulta.PENDENTE_CONFIRMACAO);
         consulta.setObservacoes(request.getObservacoes());
         consulta.setLembreteEnviado(false);
-        
-        // Definir data limite de confirmação (24 horas antes da consulta)
-        consulta.setDataLimiteConfirmacao(request.getDataHora().minusHours(24));
+
+        consulta.setDataLimiteConfirmacao(request.getDataHora().minusMinutes(30)); // Ajustado para 30 minutos
 
         Consulta salva = consultaRepository.save(consulta);
         log.info("Consulta agendada com sucesso. ID: {}", salva.getId());
@@ -141,7 +140,7 @@ public class ConsultaService {
 
     public List<Consulta> verificarConsultasNaoConfirmadas() {
         log.info("Verificando consultas não confirmadas");
-        LocalDateTime agora = LocalDateTime.now();
+        LocalDateTime agora = LocalDateTime.now().plusHours(2);
         return consultaRepository.buscarConsultasNaoConfirmadas(StatusConsulta.PENDENTE_CONFIRMACAO, agora);
     }
 
