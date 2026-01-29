@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +29,9 @@ public class NotificacaoScheduler {
         log.info("Verificando consultas próximas para notificação...");
 
         // Define a janela de tempo: Consultas que acontecem daqui a 24 horas (com margem de 1 hora)
-        LocalDateTime agora = LocalDateTime.now();
-        LocalDateTime inicioJanela = agora.plusHours(24).minusMinutes(30); // 23h30min a partir de agora
-        LocalDateTime fimJanela = agora.plusHours(24).plusMinutes(30);     // 24h30min a partir de agora
+
+        LocalDateTime inicioJanela = LocalDateTime.now();
+        LocalDateTime fimJanela = inicioJanela.plusHours(24).plusMinutes(30);     // 24h30min a partir de agora
 
         // Busca consultas AGENDADAS e PENDENTE_CONFIRMACAO
         List<Consulta> consultasAgendadas = consultaRepository.buscarConsultasParaNotificar(
@@ -55,21 +56,28 @@ public class NotificacaoScheduler {
 
         log.info("Encontradas {} consultas para confirmar.", consultasProximas.size());
 
+
+        // Define o formato desejado
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
         for (Consulta consulta : consultasProximas) {
             try {
+                // URL Base (Em produção seria o domínio real, aqui é localhost)
+                String linkConfirmacao = "http://localhost:8080/confirmacao.html?id=" + consulta.getId();
                 // 1. Monta a mensagem JSON (formato simples)
                 String tipoMensagem = consulta.getStatus() == StatusConsulta.PENDENTE_CONFIRMACAO 
                         ? "confirme sua consulta" 
                         : "lembrete: sua consulta";
-                        
+
                 String mensagemJson = String.format(
-                        "{\"pacienteId\": %d, \"consultaId\": %d, \"mensagem\": \"Olá %s, %s para amanhã às %s na %s.\"}",
+                        "{\"pacienteId\": %d, \"consultaId\": %d, \"mensagem\": \"Olá %s, %s para %s na %s. Por favor, confirme sua presença clicando no link: %s\" }",
                         consulta.getPaciente().getId(),
                         consulta.getId(),
                         consulta.getPaciente().getNome(),
                         tipoMensagem,
-                        consulta.getDataHora().toLocalTime(),
-                        consulta.getUnidade().getNome()
+                        consulta.getDataHora().format(formatter),
+                        consulta.getUnidade().getNome(),
+                        linkConfirmacao
                 );
 
 
