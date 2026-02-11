@@ -22,6 +22,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -195,5 +197,233 @@ class ConsultaServiceTest {
 
         verify(consultaRepository).save(any());
         verify(liberacaoVagaService).liberarVaga(any());
+    }
+
+    @Test
+    void agendar_unidade_nao_encontrada() {
+        LocalDateTime dataHora = LocalDateTime.now().plusDays(1);
+        ConsultaRequest request = new ConsultaRequest();
+        request.setPacienteId(paciente.getId());
+        request.setMedicoId(medico.getId());
+        request.setUnidadeId(999);
+        request.setDataHora(dataHora);
+
+        when(pacienteRepository.findById(paciente.getId())).thenReturn(Optional.of(paciente));
+        when(medicoRepository.findById(medico.getId())).thenReturn(Optional.of(medico));
+        when(unidadeSaudeRepository.findById(999)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> consultaService.agendar(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Unidade de saúde não encontrada");
+        verify(consultaRepository, never()).save(any());
+    }
+
+    @Test
+    void agendar_conflito_horario() {
+        LocalDateTime dataHora = LocalDateTime.now().plusDays(1);
+        ConsultaRequest request = new ConsultaRequest();
+        request.setPacienteId(paciente.getId());
+        request.setMedicoId(medico.getId());
+        request.setUnidadeId(unidade.getId());
+        request.setDataHora(dataHora);
+
+        when(pacienteRepository.findById(paciente.getId())).thenReturn(Optional.of(paciente));
+        when(medicoRepository.findById(medico.getId())).thenReturn(Optional.of(medico));
+        when(unidadeSaudeRepository.findById(unidade.getId())).thenReturn(Optional.of(unidade));
+        when(consultaRepository.existsConsultaNoHorario(medico.getId(), dataHora)).thenReturn(true);
+
+        assertThatThrownBy(() -> consultaService.agendar(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Já existe uma consulta agendada");
+        verify(consultaRepository, never()).save(any());
+    }
+
+    @Test
+    void agendar_data_passada() {
+        LocalDateTime dataHora = LocalDateTime.now().minusHours(1);
+        ConsultaRequest request = new ConsultaRequest();
+        request.setPacienteId(paciente.getId());
+        request.setMedicoId(medico.getId());
+        request.setUnidadeId(unidade.getId());
+        request.setDataHora(dataHora);
+
+        when(pacienteRepository.findById(paciente.getId())).thenReturn(Optional.of(paciente));
+        when(medicoRepository.findById(medico.getId())).thenReturn(Optional.of(medico));
+        when(unidadeSaudeRepository.findById(unidade.getId())).thenReturn(Optional.of(unidade));
+        when(consultaRepository.existsConsultaNoHorario(medico.getId(), dataHora)).thenReturn(false);
+
+        assertThatThrownBy(() -> consultaService.agendar(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("data da consulta deve ser futura");
+        verify(consultaRepository, never()).save(any());
+    }
+
+    @Test
+    void confirmarConsulta_sucesso() {
+        Consulta consulta = new Consulta();
+        consulta.setId(20);
+        consulta.setStatus(StatusConsulta.PENDENTE_CONFIRMACAO);
+        consulta.setDataLimiteConfirmacao(LocalDateTime.now().plusHours(1));
+
+        when(consultaRepository.findById(20)).thenReturn(Optional.of(consulta));
+        when(consultaRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        ConsultaResponse response = new ConsultaResponse();
+        response.setId(20);
+        when(consultaMapper.toResponse(any())).thenReturn(response);
+
+        ConsultaResponse result = consultaService.confirmarConsulta(20);
+
+        assertThat(result).isNotNull();
+        assertThat(consulta.getStatus()).isEqualTo(StatusConsulta.AGENDADA);
+        verify(consultaRepository).save(consulta);
+    }
+
+    @Test
+    void confirmarConsulta_status_invalido() {
+        Consulta consulta = new Consulta();
+        consulta.setId(20);
+        consulta.setStatus(StatusConsulta.AGENDADA);
+
+        when(consultaRepository.findById(20)).thenReturn(Optional.of(consulta));
+
+        assertThatThrownBy(() -> consultaService.confirmarConsulta(20))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("pendentes de confirmação");
+        verify(consultaRepository, never()).save(any());
+    }
+
+    @Test
+    void cancelarConsulta_sucesso() {
+        Consulta consulta = new Consulta();
+        consulta.setId(25);
+        consulta.setStatus(StatusConsulta.PENDENTE_CONFIRMACAO);
+
+        when(consultaRepository.findById(25)).thenReturn(Optional.of(consulta));
+        when(consultaRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        ConsultaResponse response = new ConsultaResponse();
+        response.setId(25);
+        when(consultaMapper.toResponse(any())).thenReturn(response);
+
+        ConsultaResponse result = consultaService.cancelarConsulta(25);
+
+        assertThat(result).isNotNull();
+        assertThat(consulta.getStatus()).isEqualTo(StatusConsulta.CANCELADA);
+        verify(consultaRepository).save(consulta);
+    }
+
+    @Test
+    void cancelarConsulta_quandoRealizada_deveLancar() {
+        Consulta consulta = new Consulta();
+        consulta.setId(25);
+        consulta.setStatus(StatusConsulta.REALIZADA);
+
+        when(consultaRepository.findById(25)).thenReturn(Optional.of(consulta));
+
+        assertThatThrownBy(() -> consultaService.cancelarConsulta(25))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("já realizada");
+        verify(consultaRepository, never()).save(any());
+    }
+
+    @Test
+    void desistirConsulta_quandoRealizada_deveLancar() {
+        Consulta consulta = new Consulta();
+        consulta.setId(30);
+        consulta.setStatus(StatusConsulta.REALIZADA);
+
+        when(consultaRepository.findById(30)).thenReturn(Optional.of(consulta));
+
+        assertThatThrownBy(() -> consultaService.desistirConsulta(30))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("já realizada");
+        verify(consultaRepository, never()).save(any());
+    }
+
+    @Test
+    void desistirConsulta_quandoCancelada_deveLancar() {
+        Consulta consulta = new Consulta();
+        consulta.setId(30);
+        consulta.setStatus(StatusConsulta.CANCELADA);
+
+        when(consultaRepository.findById(30)).thenReturn(Optional.of(consulta));
+
+        assertThatThrownBy(() -> consultaService.desistirConsulta(30))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("cancelada");
+        verify(consultaRepository, never()).save(any());
+    }
+
+    @Test
+    void buscarPorId_deveRetornarConsulta() {
+        Consulta consulta = new Consulta();
+        consulta.setId(40);
+        when(consultaRepository.findById(40)).thenReturn(Optional.of(consulta));
+        ConsultaResponse response = new ConsultaResponse();
+        response.setId(40);
+        when(consultaMapper.toResponse(consulta)).thenReturn(response);
+
+        ConsultaResponse result = consultaService.buscarPorId(40);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(40);
+    }
+
+    @Test
+    void buscarPorId_deveLancarQuandoNaoEncontrada() {
+        when(consultaRepository.findById(999)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> consultaService.buscarPorId(999))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Consulta não encontrada");
+    }
+
+    @Test
+    void listarPorPaciente_deveRetornarLista() {
+        Consulta consulta = new Consulta();
+        consulta.setId(1);
+        when(consultaRepository.findByPacienteId(1)).thenReturn(java.util.List.of(consulta));
+        ConsultaResponse response = new ConsultaResponse();
+        when(consultaMapper.toResponse(consulta)).thenReturn(response);
+
+        java.util.List<ConsultaResponse> result = consultaService.listarPorPaciente(1);
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    void listarPorStatus_deveRetornarLista() {
+        Consulta consulta = new Consulta();
+        when(consultaRepository.findByStatus(StatusConsulta.AGENDADA)).thenReturn(java.util.List.of(consulta));
+        ConsultaResponse response = new ConsultaResponse();
+        when(consultaMapper.toResponse(consulta)).thenReturn(response);
+
+        java.util.List<ConsultaResponse> result = consultaService.listarPorStatus(StatusConsulta.AGENDADA);
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    void listarTodas_deveRetornarLista() {
+        Consulta consulta = new Consulta();
+        when(consultaRepository.findAll()).thenReturn(java.util.List.of(consulta));
+        ConsultaResponse response = new ConsultaResponse();
+        when(consultaMapper.toResponse(consulta)).thenReturn(response);
+
+        java.util.List<ConsultaResponse> result = consultaService.listarTodas();
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    void verificarConsultasNaoConfirmadas_deveRetornarLista() {
+        Consulta consulta = new Consulta();
+        consulta.setId(1);
+        when(consultaRepository.buscarConsultasNaoConfirmadas(eq(StatusConsulta.PENDENTE_CONFIRMACAO), any(LocalDateTime.class)))
+                .thenReturn(java.util.List.of(consulta));
+
+        java.util.List<Consulta> result = consultaService.verificarConsultasNaoConfirmadas();
+
+        assertThat(result).hasSize(1);
     }
 }
