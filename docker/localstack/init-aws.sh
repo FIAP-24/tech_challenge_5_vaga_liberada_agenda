@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 echo "### Iniciando configuração do LocalStack (SNS + SQS) ###"
 
 # 1. Criar o Tópico SNS

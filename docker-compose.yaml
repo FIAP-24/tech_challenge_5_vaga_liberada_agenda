@@ -13,6 +13,8 @@ services:
         condition: service_healthy
       localstack:
         condition: service_healthy
+    networks:
+      - shared_network
 
   # Serviço MySQL
   mysql:
@@ -27,6 +29,8 @@ services:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
+    networks:
+      - shared_network
 
   # Serviço LocalStack (AWS Mock)
   localstack:
@@ -42,5 +46,12 @@ services:
       - AWS_DEFAULT_REGION=us-east-1
     volumes:
       # Mapeia o script para rodar quando o LocalStack estiver "Ready"
-      # - ./docker/localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
-      - "/var/run/docker.sock:/var/run/docker.sock"
+       - ./docker/localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
+       - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - shared_network
+
+networks:
+  shared_network:
+    name: shared_network
+    driver: bridge
